@@ -37,11 +37,8 @@ Sub insert_from_EXCEL_to_DB()
         var6 = ws.Range("G" & i)
         vbox = ws.Range("K" & i)
     
-#creating the first part of the query (only row 2)
-
         SQL_command = "INSERT TEMP_EXTRACT (VAR1, VAR2, EPO, VAR3, VAR4, VAR5, VAR6, EBOX, ID) VALUES ('" & var1 & "', '" & var2 & "', '" & vpo & "', '" & var3 & "', '" & var4 & "', '" & var5 & "', '" & var6 & "', '" & "', '" & vbox & "', '" & id & "')"
-        
-#creating the second part of the query (the left rows)       
+             
         For j = 3 To LastRow
         a = ws.Range("A" & j)
         b = ws.Range("B" & j)
