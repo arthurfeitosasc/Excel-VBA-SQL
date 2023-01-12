@@ -1,17 +1,17 @@
 # Excel-VBA-SQL
-This code shows the fastest way to insert data from an excel sheet to an online server using SQL Server and VBA
+This code shows the fastest way to insert data from an excel sheet to an online server using SQL Server and VBA:
 
 
-Option Explicit
-Dim cn As New ADODB.Connection
-Dim i, j, LastRow, vbox As Integer
-Dim SQL_command, a, b, c, var1, var2, vpo, var3, var4, var5, var6, id As String
-Dim ws As Worksheet
+        Option Explicit
+        Dim cn As New ADODB.Connection
+        Dim i, j, LastRow, vbox As Integer
+        Dim SQL_command, a, b, c, var1, var2, vpo, var3, var4, var5, var6, id As String
+        Dim ws As Worksheet
 
-Sub insert_from_EXCEL_to_DB()
+        Sub insert_from_EXCEL_to_DB()
         
-    Set ws = Sheets("extract")
-    LastRow = Range("A1048576").End(xlUp).Row
+        Set ws = Sheets("extract")
+        LastRow = Range("A1048576").End(xlUp).Row
 
 #creating a connection with the server
 
@@ -52,33 +52,33 @@ Sub insert_from_EXCEL_to_DB()
         var6 = ws.Range("G" & j)
         vbox = ws.Range("K" & j)
         
-        
         SQL_command = SQL_command & ",('" & var1 & "', '" & var2 & "', '" & vpo & "', '" & var3 & "', '" & var4 & "', '" & var5 & "', '" & var6 & "', '" & vbox & "', '" & id & "')"
-    
-    
+   
         Next j
-
-#Executing the entire query with only one command
 
         cn.Execute SQL_command
 
     Next i
     
+#The entire query was executed with only one command.    
 
-#Merging the temporary table (cleaned and filled as above) with the destination Database    
-SQL_command = "MERGE dbo.DEST_DB AS D " & _
-      "USING dbo.TEMP_EXTRACT AS O ON (O.EPKEY = D.PKEY) " & _
-      "WHEN MATCHED THEN " & _
-      "UPDATE SET " & _
-      "D.VAR6 = O.VAR6, D.STATUS_EXTRACTION = 'IN' " & _
-      "WHEN NOT MATCHED BY SOURCE THEN " & _
-      "UPDATE SET " & _
-      "D.STATUS_EXTRACTION = 'NOT IN' " & _
-      "WHEN NOT MATCHED BY TARGET THEN " & _
-      "INSERT (VAR1, VAR2, EPO, VAR3, VAR4, VAR5, VAR6, EBOX, ID) " & _
-      " VALUES (O.VAR1, O.VAR2, O.EPO, O.VAR3, O.VAR4, O.VAR5, O.VAR6, O.EBOX, O.ID,'IN');"
+#Merging the temporary table (cleaned and filled as above) with the destination Database
 
-cn.Execute SQL_command
+        SQL_command = "MERGE dbo.DEST_DB AS D " & _
+              "USING dbo.TEMP_EXTRACT AS O ON (O.EPKEY = D.PKEY) " & _
+              "WHEN MATCHED THEN " & _
+              "UPDATE SET " & _
+              "D.VAR6 = O.VAR6, D.STATUS_EXTRACTION = 'IN' " & _
+              "WHEN NOT MATCHED BY SOURCE THEN " & _
+              "UPDATE SET " & _
+              "D.STATUS_EXTRACTION = 'NOT IN' " & _
+              "WHEN NOT MATCHED BY TARGET THEN " & _
+              "INSERT (VAR1, VAR2, EPO, VAR3, VAR4, VAR5, VAR6, EBOX, ID) " & _
+              " VALUES (O.VAR1, O.VAR2, O.EPO, O.VAR3, O.VAR4, O.VAR5, O.VAR6, O.EBOX, O.ID,'IN');"
+
+        cn.Execute SQL_command
+
+#Sending a mesage and closing the connection
 
         MsgBox "Extraction Sucessfully."
         cn.Close
